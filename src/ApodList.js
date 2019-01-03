@@ -8,7 +8,8 @@ import {
   Image,
   Dimensions,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import Apidatamanager from "./DataManager";
 const dimensions = Dimensions.get("window");
@@ -29,17 +30,14 @@ const styles = StyleSheet.create({
 });
 
 export default class ApodList extends Component {
-  state = { data: [], start_date: null, end_date: null, isdatafetching: false };
+  state = { data: [], start_date: null, end_date: null, isdatafetching: true };
   componentWillMount = () => {
     let moment = require("moment");
     const enddate = moment().format("YYYY-MM-DD");
     const startdate = moment()
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    Apidatamanager.startdate = startdate;
-    Apidatamanager.enddate = enddate;
-    Apidatamanager.handleResponse = this.handleResponse;
-    Apidatamanager.getdata();
+    Apidatamanager.getdata(startdate, enddate, this.handleResponse);
     this.setState({ start_date: startdate, end_date: enddate });
   };
 
@@ -48,6 +46,9 @@ export default class ApodList extends Component {
     this.setState({ data: response.data.reverse(), isdatafetching: false });
   };
 
+  apiResponsefailure = err => {
+    Alert.alert(err);
+  };
   onPressLoadMore = () => {
     const previousstartdate = this.state.start_date;
     let moment = require("moment");
@@ -57,10 +58,8 @@ export default class ApodList extends Component {
     const startdate = moment(`${enddate}`)
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    Apidatamanager.startdate = startdate;
-    Apidatamanager.enddate = enddate;
-    Apidatamanager.handleResponse = this.handlebuttonResponse;
-    Apidatamanager.getdata();
+    
+    Apidatamanager.getdata(startdate,enddate,this.handlebuttonResponse,this.apiResponsefailure);
     this.setState({ start_date: startdate, end_date: enddate });
   };
 
