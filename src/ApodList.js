@@ -30,24 +30,42 @@ const styles = StyleSheet.create({
 });
 
 export default class ApodList extends Component {
-  state = { data: [], start_date: null, end_date: null, isdatafetching: true };
+  state = {
+    data: [],
+    start_date: null,
+    end_date: null,
+    isdatafetching: true,
+    initialrender: 0
+  };
   componentWillMount = () => {
     let moment = require("moment");
-    const enddate = moment().format("YYYY-MM-DD");
+    const enddate = moment()
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
     const startdate = moment()
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    Apidatamanager.getdata(startdate, enddate, this.handleResponse);
+    Apidatamanager.getdata(
+      startdate,
+      enddate,
+      this.handleResponse,
+      this.apiResponsefailure
+    );
     this.setState({ start_date: startdate, end_date: enddate });
   };
 
   handleResponse = response => {
     console.log(response);
-    this.setState({ data: response.data.reverse(), isdatafetching: false });
+    this.setState({
+      data: response.data.reverse(),
+      isdatafetching: false,
+      initialrender: this.state.initialrender+1
+    });
   };
 
   apiResponsefailure = err => {
-    Alert.alert(err);
+    this.setState({ isdatafetching: false });
+    Alert.alert("Sorry, unable to fetch data.");
   };
   onPressLoadMore = () => {
     const previousstartdate = this.state.start_date;
@@ -58,8 +76,12 @@ export default class ApodList extends Component {
     const startdate = moment(`${enddate}`)
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    
-    Apidatamanager.getdata(startdate,enddate,this.handlebuttonResponse,this.apiResponsefailure);
+    Apidatamanager.getdata(
+      startdate,
+      enddate,
+      this.handlebuttonResponse,
+      this.apiResponsefailure
+    );
     this.setState({ start_date: startdate, end_date: enddate });
   };
 
@@ -70,6 +92,22 @@ export default class ApodList extends Component {
       data: prevState.data.concat(responsedata),
       isdatafetching: false
     }));
+  };
+
+  //  showIndicator = condition => {
+  //    this.setState({ isdatafetching: condition });
+  //  };
+
+  _footerComponent = () => {
+    if(!this.state.isdatafetching)
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+    else{
+      return null
+    }
   };
 
   _keyExtractor = (item, index) => item.date;
@@ -92,7 +130,10 @@ export default class ApodList extends Component {
   render() {
     console.log(this.state.data);
     let activityindicator;
-    if (this.state.isdatafetching === true) {
+    if (
+      this.state.isdatafetching === true &&
+      this.state.initialrender === 0
+    ) {
       activityindicator = <ActivityIndicator size="large" color="#0000ff" />;
     } else {
       activityindicator = null;
@@ -104,6 +145,7 @@ export default class ApodList extends Component {
           data={this.state.data}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
+          ListFooterComponent={this._footerComponent}
         />
         <View style={styles.button}>
           <Button
