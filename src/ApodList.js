@@ -35,7 +35,7 @@ export default class ApodList extends Component {
     start_date: null,
     end_date: null,
     isdatafetching: true,
-    initialrender: 0
+    initialrender: false
   };
   componentWillMount = () => {
     let moment = require("moment");
@@ -59,7 +59,7 @@ export default class ApodList extends Component {
     this.setState({
       data: response.data.reverse(),
       isdatafetching: false,
-      initialrender: this.state.initialrender+1
+      initialrender: !this.state.initialrender
     });
   };
 
@@ -129,10 +129,11 @@ export default class ApodList extends Component {
 
   render() {
     console.log(this.state.data);
+    console.log(this.state.isdatafetching)
     let activityindicator;
     if (
       this.state.isdatafetching === true &&
-      this.state.initialrender === 0
+      this.state.initialrender === false
     ) {
       activityindicator = <ActivityIndicator size="large" color="#0000ff" />;
     } else {
