@@ -1,27 +1,23 @@
 import React, { Component } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   FlatList,
   TouchableOpacity,
   Image,
   Dimensions,
-  Button,
   ActivityIndicator,
   Alert
 } from "react-native";
 import Apidatamanager from "./DataManager";
 import glamorous, { ThemeProvider } from "glamorous-native";
 const dimensions = Dimensions.get("window");
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center"
-  }
+const Indicatorview = glamorous.view({
+  flex: 1,
+  justifyContent: "center"
 });
 const Mainview = glamorous.view({
-  height: dimensions.height-20,
+  height: dimensions.height - 20,
   width: dimensions.width
 });
 export default class ApodList extends Component {
@@ -134,7 +130,7 @@ export default class ApodList extends Component {
     }
     return (
       <Mainview>
-        <View style={styles.container}>{activityindicator}</View>
+        <Indicatorview>{activityindicator}</Indicatorview>
         <FlatList
           data={this.state.data}
           keyExtractor={this._keyExtractor}
