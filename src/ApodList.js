@@ -12,23 +12,18 @@ import {
   Alert
 } from "react-native";
 import Apidatamanager from "./DataManager";
+import glamorous, { ThemeProvider } from "glamorous-native";
 const dimensions = Dimensions.get("window");
 const styles = StyleSheet.create({
-  display: {
-    height: dimensions.height - 20,
-    width: dimensions.width
-  },
-  button: {
-    position: "absolute",
-    bottom: 0,
-    right: 0
-  },
   container: {
     flex: 1,
     justifyContent: "center"
   }
 });
-
+const Mainview = glamorous.view({
+  height: dimensions.height-20,
+  width: dimensions.width
+});
 export default class ApodList extends Component {
   state = {
     data: [],
@@ -138,7 +133,7 @@ export default class ApodList extends Component {
       activityindicator = null;
     }
     return (
-      <View style={styles.display}>
+      <Mainview>
         <View style={styles.container}>{activityindicator}</View>
         <FlatList
           data={this.state.data}
@@ -148,7 +143,7 @@ export default class ApodList extends Component {
           onEndReached={this.onPressLoadMore}
           ListFooterComponent={this._footerComponent}
         />
-      </View>
+      </Mainview>
     );
   }
 }
