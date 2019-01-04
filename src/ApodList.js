@@ -39,9 +39,7 @@ export default class ApodList extends Component {
   };
   componentWillMount = () => {
     let moment = require("moment");
-    const enddate = moment()
-      .subtract(1, "days")
-      .format("YYYY-MM-DD");
+    const enddate = moment().format("YYYY-MM-DD");
     const startdate = moment()
       .subtract(9, "days")
       .format("YYYY-MM-DD");
@@ -99,14 +97,14 @@ export default class ApodList extends Component {
   //  };
 
   _footerComponent = () => {
-    if(!this.state.isdatafetching)
-    return (
-      <View>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-    else{
-      return null
+    if (!this.state.isdatafetching)
+      return (
+        <View>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    else {
+      return null;
     }
   };
 
@@ -129,7 +127,7 @@ export default class ApodList extends Component {
 
   render() {
     console.log(this.state.data);
-    console.log(this.state.isdatafetching)
+    console.log(this.state.isdatafetching);
     let activityindicator;
     if (
       this.state.isdatafetching === true &&
@@ -146,15 +144,10 @@ export default class ApodList extends Component {
           data={this.state.data}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
+          onEndReachedThreshold={0.1}
+          onEndReached={this.onPressLoadMore}
           ListFooterComponent={this._footerComponent}
         />
-        <View style={styles.button}>
-          <Button
-            onPress={this.onPressLoadMore}
-            title="Load More"
-            color="#841584"
-          />
-        </View>
       </View>
     );
   }
