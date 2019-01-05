@@ -30,7 +30,7 @@ export default class ApodList extends Component {
   };
   componentWillMount = () => {
     let moment = require("moment");
-    const enddate = moment().format("YYYY-MM-DD");
+    const enddate = moment().subtract(1, "days").format("YYYY-MM-DD");
     const startdate = moment()
       .subtract(9, "days")
       .format("YYYY-MM-DD");
@@ -90,9 +90,9 @@ export default class ApodList extends Component {
   _footerComponent = () => {
     if (!this.state.isdatafetching)
       return (
-        <View>
+        <Indicatorview>
           <ActivityIndicator size="large" color="#0000ff" />
-        </View>
+        </Indicatorview>
       );
     else {
       return null;
