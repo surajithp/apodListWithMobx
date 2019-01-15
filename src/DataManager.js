@@ -28,7 +28,7 @@ class DataManager {
       .then(
         response => {
           const responsedata = response.data;
-          this.data = responsedata;
+          this.data = responsedata.reverse();
           this.state = "done";
         },
         error => {
@@ -40,21 +40,26 @@ class DataManager {
   fetchMoreData() {
     console.log("Called fetch more data");
     let previousstartdate = this.start_date;
+    console.log(previousstartdate);
     let moment = require("moment");
     let enddate = moment(`${previousstartdate}`)
       .subtract(1, "days")
       .format("YYYY-MM-DD");
+    console.log(enddate);
     let startdate = moment(`${enddate}`)
       .subtract(9, "days")
       .format("YYYY-MM-DD");
+    console.log(startdate);
     axios
       .get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${startdate}&end_date=${enddate}`
       )
       .then(
         response => {
-          const responsedata = response.data;
-          this.data = this.data.concat(responsedata);
+          console.log(response);
+          let additionaldata = response.data.reverse();
+          console.log(additionaldata);
+          this.data = this.data.concat(additionaldata);
         },
         error => {
           console.log(error);

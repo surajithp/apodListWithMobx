@@ -38,7 +38,7 @@ export default class ApodList extends Component {
     return (
       <View>
         <FlatList
-          data={Apidatamanager.data.reverse().slice()}
+          data={Apidatamanager.data.slice()}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
           onEndReachedThreshold={0.1}
