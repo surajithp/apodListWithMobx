@@ -11,16 +11,17 @@ class DataManager {
   @observable state = "pending";
   @action
   fetchData(startdate, enddate) {
-    console.log(startdate)
-    console.log(enddate)
+    console.log(startdate);
+    console.log(enddate);
     axios
       .get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${startdate}&end_date=${enddate}`
       )
       .then(
         response => {
-          console.log(response);
+          console.log("====response====");
           const responsedata = response.data;
+          console.log(responsedata);
           this.data = responsedata;
           this.state = "done";
         },

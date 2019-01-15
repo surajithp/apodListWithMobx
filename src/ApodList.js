@@ -16,52 +16,57 @@ export default class ApodList extends Component {
   @observable start_date: null;
   @observable end_date: null;
 
-  componentWillMount = () => {
-    console.log("==============");
+  componentDidMount = () => {
     let moment = require("moment");
-    this.end_date = moment().format("YYYY-MM-DD");
+    this.end_date = moment()
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
     this.start_date = moment()
-      .subtract(11, "days")
+      .subtract(10, "days")
       .format("YYYY-MM-DD");
     Apidatamanager.fetchData(this.start_date, this.end_date);
   };
+  @action
+  onScrollingLoadMore = () => {
+    console.log("Load More Images");
+    const previousstartdate = this.start_date;
+    console.log(previousstartdate);
+    let moment = require("moment");
+    const enddate = moment(`${previousstartdate}`)
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
+    console.log(enddate);
+    const startdate = moment(`${enddate}`)
+      .subtract(9, "days")
+      .format("YYYY-MM-DD");
+    console.log(startdate);
+    Apidatamanager.fetchData(startdate,enddate)
+    this.start_date = startdate;
+  };
+
   _keyExtractor = (item, index) => item.date;
 
-  _renderItem = observer(({ item }) => {
+  _renderItem = ({ item }) => {
+    console.log("Flatlist Render");
     return (
       <View>
-        <TouchableOpacity onPress={this._onPressButton}>
-          <Image
-            source={{
-              uri: item.url
-            }}
-          />
-        </TouchableOpacity>
+        <Image style={{ width: 100, height: 100 }} source={{ uri: item.url }} />
         <Text>{item.title}</Text>
         <Text>{item.date}</Text>
       </View>
     );
-  });
+  };
   render() {
-    console.log(Apidatamanager.data.slice());
-    let list;
-    if (Apidatamanager.data.slice().length > 0) {
-      <FlatList
-        data={Apidatamanager.data.slice()}
-        keyExtractor={this._keyExtractor}
-        renderItem={this._renderItem}
-      />;
-    } else {
-      list = (
-        <View>
-          <Text>No Images Loaded</Text>
-        </View>
-      );
-    }
+    console.log("rendered");
     return (
       <View>
-        <View>{list}</View>
-        <Text>Scroll down to get more Images</Text>
+        <FlatList
+          data={Apidatamanager.data.reverse().slice()}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+          onEndReachedThreshold={0.2}
+          onEndReached={this.onScrollingLoadMore}
+        />
       </View>
     );
   }
