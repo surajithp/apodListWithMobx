@@ -1,11 +1,7 @@
 import axios from "axios";
 import { action, observable } from "mobx";
+const Rx = require("rxjs/Rx");
 class DataManager {
-  // constructor(date1, date2, handleResponse) {
-  //   this.startdate = date1;
-  //   this.enddate = date2;
-  //   this.handleResponse = handleResponse;
-  // }
   @observable start_date: null;
   @observable end_date: null;
   @observable data = [];
@@ -19,22 +15,14 @@ class DataManager {
     this.start_date = moment()
       .subtract(10, "days")
       .format("YYYY-MM-DD");
-    axios
-      .get(
+    Rx.Observable.from(
+      axios.get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${
           this.start_date
         }&end_date=${this.end_date}`
       )
-      .then(
-        response => {
-          const responsedata = response.data;
-          this.data = responsedata.reverse();
-          this.state = "done";
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    ).subscribe(val => (this.data = val.data.reverse()));
+    this.state = "done";
   }
   @action
   fetchMoreData() {
@@ -50,21 +38,11 @@ class DataManager {
       .subtract(9, "days")
       .format("YYYY-MM-DD");
     console.log(startdate);
-    axios
-      .get(
+    Rx.Observable.from(
+      axios.get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${startdate}&end_date=${enddate}`
       )
-      .then(
-        response => {
-          console.log(response);
-          let additionaldata = response.data.reverse();
-          console.log(additionaldata);
-          this.data = this.data.concat(additionaldata);
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    ).subscribe(val => (this.data = this.data.concat(val.data.reverse())));
     this.start_date = startdate;
   }
 }

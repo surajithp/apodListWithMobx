@@ -5,16 +5,30 @@ import {
   Button,
   FlatList,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
+import glamorous, { ThemeProvider } from "glamorous-native";
 import { observer } from "mobx-react";
-import { observable, computed, action, autorun } from "mobx";
+import { observable } from "mobx";
 import Apidatamanager from "./DataManager";
-//import glamorous, { ThemeProvider } from "glamorous-native";
+const dimensions = Dimensions.get("window");
+const Mainview = glamorous.view({
+  height: dimensions.height - 20,
+  width: dimensions.width
+});
+const Indicatorview = glamorous.view({
+  flex: 1,
+  justifyContent: "center"
+});
 @observer
 export default class ApodList extends Component {
+  isDataFetched = "";
+
   componentDidMount = () => {
     Apidatamanager.fetchData();
+    this.isDataFetched = Apidatamanager.state;
   };
 
   onScrollingLoadMore = () => {
@@ -23,6 +37,18 @@ export default class ApodList extends Component {
   };
 
   _keyExtractor = (item, index) => item.date;
+
+  _footerComponent = () => {
+    if (this.isDataFetched === "done")
+      return (
+        <Indicatorview>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </Indicatorview>
+      );
+    else {
+      return null;
+    }
+  };
 
   _renderItem = ({ item }) => {
     return (
@@ -35,16 +61,24 @@ export default class ApodList extends Component {
   };
   render() {
     console.log(Apidatamanager.data.slice());
+    let activityindicator;
+    if (this.isDataFetched === "done") {
+      activityindicator = null;
+    } else {
+      activityindicator = <ActivityIndicator size="large" color="#0000ff" />;
+    }
     return (
-      <View>
+      <Mainview>
+        <Indicatorview>{activityindicator}</Indicatorview>
         <FlatList
           data={Apidatamanager.data.slice()}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
           onEndReachedThreshold={0.1}
           onEndReached={this.onScrollingLoadMore}
+          ListFooterComponent={this._footerComponent}
         />
-      </View>
+      </Mainview>
     );
   }
 }
