@@ -17,15 +17,24 @@ const Dateview = glamorous.view({
   right: 0
 });
 const ExplanationText = glamorous.text({
-  color: "white"
+  color: "white",
+  padding: 10
+});
+const TitleView = glamorous.view({
+  position: "absolute",
+  left: 0,
+  top: 10,
+  padding: 10
 });
 const TitleText = glamorous.text({
   color: "white",
-  fontSize: 20,
   fontWeight: "bold"
 });
 
 class FullImage extends React.Component {
+  static navigationOptions = {
+    title: "Full Image with Description"
+  };
   render() {
     const { navigation } = this.props;
     const urlImage = navigation.getParam("imageUrl", "Image Not loaded");
@@ -37,6 +46,7 @@ class FullImage extends React.Component {
       "imageDate",
       "Date of Particular Iamge"
     );
+    const imgTitle = navigation.getParam("imageTitle", "Title of Image");
     return (
       <FullImageview>
         <Image
@@ -46,11 +56,11 @@ class FullImage extends React.Component {
           }}
         />
         <Explanationview>
-          <ExplanationText>
-            <TitleText>Title Explanation:</TitleText>
-            {explanationOfImage}
-          </ExplanationText>
+          <ExplanationText>{explanationOfImage}</ExplanationText>
         </Explanationview>
+        <TitleView>
+          <TitleText>{imgTitle}</TitleText>
+        </TitleView>
         <Dateview>
           <ExplanationText>{imagedate}</ExplanationText>
         </Dateview>

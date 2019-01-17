@@ -19,7 +19,7 @@ console.log(dimensions.width);
 console.log(dimensions.height);
 console.log(Dimensions.get("screen").height);
 const Mainview = glamorous.view({
-  height: dimensions.height - 60,
+  height: dimensions.height - 80,
   width: dimensions.width
 });
 const Indicatorview = glamorous.view({
@@ -32,21 +32,21 @@ const Renderview = glamorous.view({
 });
 const Titleview = glamorous.view({
   position: "absolute",
-  bottom: 20,
+  bottom: 0,
   justifyContent: "center"
 });
 const Dateview = glamorous.view({
   position: "absolute",
   top: 0,
-  right: 10
+  right: 0
 });
 const ImageView = glamorous.view({
-  flex: 1,
   height: dimensions.height / 4,
   width: dimensions.width / 2 - 20
 });
-const Textcolor = glamorous.text({
-  color: "white"
+const Titletext = glamorous.text({
+  color: "white",
+  padding: 10
 });
 @observer
 export default class ApodList extends Component {
@@ -72,7 +72,8 @@ export default class ApodList extends Component {
     this.props.navigation.navigate("Imagescreen", {
       imageUrl: item.url,
       imgExplanation: item.explanation,
-      imageDate: item.date
+      imageDate: item.date,
+      imageTitle: item.title
     });
   };
 
@@ -91,24 +92,42 @@ export default class ApodList extends Component {
   _renderItem = ({ item }) => {
     let moment = require("moment");
     let date = moment(item.date).format("MMM Do YYYY");
-    return (
-      <Renderview>
-        <ImageView>
-          <TouchableOpacity onPress={() => this._onTouchingImage(item)}>
-            <Image
-              style={{ height: 175, width: 175 }}
-              source={{ uri: item.url }}
-            />
-          </TouchableOpacity>
-          <Titleview>
-            <Textcolor>{item.title}</Textcolor>
-          </Titleview>
-          <Dateview>
-            <Textcolor>{date}</Textcolor>
-          </Dateview>
-        </ImageView>
-      </Renderview>
-    );
+    if (item.media_type === "image") {
+      return (
+        <Renderview>
+          <ImageView>
+            <TouchableOpacity onPress={() => this._onTouchingImage(item)}>
+              <Image
+                style={{ height: 184, width: 176 }}
+                source={{ uri: item.url }}
+              />
+            </TouchableOpacity>
+            <Titleview>
+              <Titletext>{item.title}</Titletext>
+            </Titleview>
+            <Dateview>
+              <Titletext>{date}</Titletext>
+            </Dateview>
+          </ImageView>
+        </Renderview>
+      );
+    } else {
+      return (
+        <Renderview>
+          <ImageView>
+            <TouchableOpacity onPress={() => this._onTouchingImage(item)}>
+              <Image
+                style={{ height: 180, width: 175 }}
+                source={{
+                  uri:
+                    "https://img.icons8.com/material-outlined/50/000000/youtube.png"
+                }}
+              />
+            </TouchableOpacity>
+          </ImageView>
+        </Renderview>
+      );
+    }
   };
   render() {
     console.log(Apidatamanager.data.slice());
