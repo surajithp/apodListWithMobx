@@ -33,7 +33,7 @@ const TitleText = glamorous.text({
 
 class FullImage extends React.Component {
   static navigationOptions = {
-    title: "Full Image with Description"
+    title: "Full Image"
   };
   render() {
     const { navigation } = this.props;

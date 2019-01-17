@@ -20,15 +20,15 @@ console.log(dimensions.height);
 console.log(Dimensions.get("screen").height);
 const Mainview = glamorous.view({
   height: dimensions.height - 80,
-  width: dimensions.width
+  width: dimensions.width,
+  padding: 6
 });
 const Indicatorview = glamorous.view({
   flex: 1,
   justifyContent: "center"
 });
 const Renderview = glamorous.view({
-  flex: 1,
-  padding: 10
+  flex: 1
 });
 const Titleview = glamorous.view({
   position: "absolute",
@@ -42,7 +42,9 @@ const Dateview = glamorous.view({
 });
 const ImageView = glamorous.view({
   height: dimensions.height / 4,
-  width: dimensions.width / 2 - 20
+  width: dimensions.width / 2 - 20,
+  backgroundColor: "red",
+  margin: 6
 });
 const Titletext = glamorous.text({
   color: "white",

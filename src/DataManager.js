@@ -21,14 +21,15 @@ class DataManager {
           this.start_date
         }&end_date=${this.end_date}`
       )
-    ).subscribe(val => (this.data = val.data.reverse()));
+    ).subscribe(val => {
+      console.log(val);
+      this.data = val.data.reverse();
+    });
     this.state = "done";
   }
   @action
   fetchMoreData() {
-    console.log("Called fetch more data");
     let previousstartdate = this.start_date;
-    console.log(previousstartdate);
     let moment = require("moment");
     let enddate = moment(`${previousstartdate}`)
       .subtract(1, "days")
@@ -37,7 +38,6 @@ class DataManager {
     let startdate = moment(`${enddate}`)
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    console.log(startdate);
     Rx.Observable.from(
       axios.get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${startdate}&end_date=${enddate}`
