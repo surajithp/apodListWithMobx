@@ -15,9 +15,6 @@ import { observable } from "mobx";
 import Apidatamanager from "./DataManager";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 const dimensions = Dimensions.get("window");
-console.log(dimensions.width);
-console.log(dimensions.height);
-console.log(Dimensions.get("screen").height);
 const Mainview = glamorous.view({
   height: dimensions.height - 80,
   width: dimensions.width,
@@ -43,7 +40,6 @@ const Dateview = glamorous.view({
 const ImageView = glamorous.view({
   height: dimensions.height / 4,
   width: dimensions.width / 2 - 20,
-  backgroundColor: "red",
   margin: 6
 });
 const Titletext = glamorous.text({

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { action, observable } from "mobx";
+import { AsyncStorage } from "react-native";
 const Rx = require("rxjs/Rx");
 class DataManager {
   @observable start_date: null;
@@ -15,14 +16,14 @@ class DataManager {
     this.start_date = moment()
       .subtract(10, "days")
       .format("YYYY-MM-DD");
-    Rx.Observable.from(
+    const promise = Rx.Observable.from(
       axios.get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${
           this.start_date
         }&end_date=${this.end_date}`
       )
-    ).subscribe(val => {
-      console.log(val);
+    );
+    const subscription = promise.subscribe(val => {
       this.data = val.data.reverse();
     });
     this.state = "done";
@@ -38,11 +39,14 @@ class DataManager {
     let startdate = moment(`${enddate}`)
       .subtract(9, "days")
       .format("YYYY-MM-DD");
-    Rx.Observable.from(
+    const promise = Rx.Observable.from(
       axios.get(
         `https://api.nasa.gov/planetary/apod?api_key=YPnh5fLrnPlqbVeCN86tba4qEEqrh9DrlLgkphhS&start_date=${startdate}&end_date=${enddate}`
       )
-    ).subscribe(val => (this.data = this.data.concat(val.data.reverse())));
+    );
+    const subscription = promise.subscribe(
+      val => (this.data = this.data.concat(val.data.reverse()))
+    );
     this.start_date = startdate;
   }
 }
