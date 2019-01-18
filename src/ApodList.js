@@ -52,11 +52,9 @@ export default class ApodList extends Component {
     title: "APOD"
   };
 
-  isDataFetched = "";
-
   componentDidMount = () => {
     Apidatamanager.fetchData();
-    this.isDataFetched = Apidatamanager.state;
+    Apidatamanager.getData();
   };
 
   onScrollingLoadMore = () => {
@@ -76,13 +74,13 @@ export default class ApodList extends Component {
   };
 
   _footerComponent = () => {
-    if (this.isDataFetched === "done")
+    if (Apidatamanager.state === "done") {
       return (
         <Indicatorview>
           <ActivityIndicator size="large" color="#0000ff" />
         </Indicatorview>
       );
-    else {
+    } else {
       return null;
     }
   };
@@ -129,8 +127,9 @@ export default class ApodList extends Component {
   };
   render() {
     console.log(Apidatamanager.data.slice());
+    console.log(Apidatamanager.state);
     let activityindicator;
-    if (this.isDataFetched === "done") {
+    if (Apidatamanager.state === "done") {
       activityindicator = null;
     } else {
       activityindicator = <ActivityIndicator size="large" color="#0000ff" />;

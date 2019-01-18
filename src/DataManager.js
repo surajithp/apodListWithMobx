@@ -24,10 +24,31 @@ class DataManager {
       )
     );
     const subscription = promise.subscribe(val => {
-      this.data = val.data.reverse();
+      this.storeData(val);
     });
-    this.state = "done";
   }
+
+  storeData = async val => {
+    console.log("Called Aysnc Storage set Property");
+    try {
+      await AsyncStorage.setItem("first10", JSON.stringify(val.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getData = async () => {
+    console.log("Called Aysnc Storage get Property");
+    try {
+      const retrievedData = await AsyncStorage.getItem("first10");
+      const itemsData = JSON.parse(retrievedData);
+      this.data = itemsData.reverse();
+      this.state = "done";
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   @action
   fetchMoreData() {
     let previousstartdate = this.start_date;
